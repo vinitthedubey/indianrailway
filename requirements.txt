@@ -1,0 +1,7 @@
+pyttsx3
+SpeechRecognition
+sounddevice 
+wavio
+playsound
+pymongo
+googlesearch-python
