@@ -1,12 +1,14 @@
+import os
+from flask import Flask, render_template, request
 import playsound
 import sounddevice as sd
 import wavio
-import pyttsx3
+import gtts
+import speech_recognition as sr
+from googletrans import Translator
+import random
 
-
-
-
-
+app = Flask(__name__)
 
 def record_audio(duration, filename):
     # Record audio
@@ -16,28 +18,42 @@ def record_audio(duration, filename):
     sd.wait()  # Wait until recording is finished
 
     # Save audio to file
-    wavio.write(filename, recording, fs, sampwidth=2)
+    wavio.write("data/recording/" + filename, recording, fs, sampwidth=2)
+
+def many_to_english(audio_file_path, language_input):
+    recognizer = sr.Recognizer()
+    translator = Translator()
+
+    with sr.AudioFile("data/recording/" + audio_file_path) as source:
+        audio = recognizer.record(source)
+
+    try:
+        print("Translating...")
+        text = recognizer.recognize_google(audio, language=language_input)
+        print("Translating to English...")
+        translation = translator.translate(text, src=language_input, dest='en')
+        return translation.text
+
+    except sr.UnknownValueError:
+        print("Sorry, could not understand audio.")
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+
+def speak(destination, text, language_input):
+    tts = gtts.gTTS(text=text, lang=language_input)
+    if os.path.exists("data/recording/" + destination):
+        os.remove("data/recording/" + destination)
+    tts.save("data/recording/" + destination)
+    playsound.playsound("data/recording/" + destination)
+
+
+
+
 
 
 
     
-import speech_recognition as sr
-
-def audio_to_text(filename):
-    recognizer = sr.Recognizer()
-
-    # Load audio file
-    with sr.AudioFile(filename) as source:
-        audio_data = recognizer.record(source)
-
-    # Recognize speech using Google Speech Recognition
-    try:
-        text = recognizer.recognize_google(audio_data, language='en-US')
-        return text
-    except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand the audio")
-    except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def Run():
@@ -46,18 +62,14 @@ def Run():
     for i in arr:
         playsound.playsound(i)
 
-    # Initialize text-to-speech engine
-    engine = pyttsx3.init()
 
     # Ask user to select preferred language
-    engine.say("Select your preferred language.")
-    engine.runAndWait()
+    speak("selection_language.mp3","Select your preferred language.","en")
+    
 
     # Record audio
-    duration = 4  # Duration of recording in seconds
-    filename = "test" + ".wav"
-    record_audio(duration, filename)
+    record_audio(3,"language_selected.mp3")
 
-    filename = "test.wav"
-    text = audio_to_text(filename)
+   
+    text = many_to_english("language_selected.mp3","en")
     return text

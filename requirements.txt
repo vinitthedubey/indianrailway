@@ -5,3 +5,8 @@ wavio
 playsound
 pymongo
 googlesearch-python
+reportlab
+googletrans
+selenium
+beautifulsoup4
+gtts

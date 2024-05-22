@@ -2,11 +2,10 @@ from googletrans import Translator
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as bs
-from src.voice import ticketbook
 import time
-from src.Passanger_details_in_voice import passanger_details_input
-from Database import dbsetup
 import os
+
+
 def extract_train_info(html):
     # Parse the HTML
     soup = html
@@ -71,7 +70,7 @@ def train_status(train_no,language_input):
             try:
                 time_train=(big_unit[i].find("div",class_=ch[0] ).text)
             except Exception as e:
-                print(e)
+                print("error=",e)
                 time_train=(big_unit[i].find("div",class_=ch[1] ).text)
             current_location=(big_unit[i].find("div",class_="Bm205b").text)
             data.append([translator.translate(curr_date,src="en",dest=language_input).text,translator.translate(current_location,src="en",dest=language_input).text,translator.translate(time_train,src="en",dest=language_input).text])
@@ -80,34 +79,7 @@ def train_status(train_no,language_input):
         print(err)
         
 
-        
 
 
 
 
-
-def receive_inputs_train_status(language_input):
-    try:
-        if(language_input!="en"):
-            translator = Translator()
-            translation = translator.translate("Say Train Number", src="en", dest=language_input)
-            speak("train_number.mp3",translation.text,language_input)
-            record_audio(6,"train_number_datarecieved.wav")
-            train_number_status=many_to_english("train_number_datarecieved.wav",language_input)
-            if(train_number_status!="" and train_number_status!=None):
-
-                train_status(train_number_status,language_input)
-            else:
-                speak("wrong_train_number_status.mp3",translator.translate("No input Kindly Refresh",src="en",dest=language_input).text,language_input)
-        else:
-            speak("train_number.mp3","Say Train Number",language_input)
-            record_audio(6,"train_number_datarecieved.wav")
-            train_number_status=many_to_english("train_number_datarecieved.wav",language_input)
-            if(train_number_status!="" and train_number_status!=None):
-
-                train_status(train_number_status,language_input)
-            else:
-                speak("wrong_train_number_status.mp3","No input Kindly Refresh",language_input)
-    except Exception as err:
-        speak("wrong_train_number_status.mp3",translator.translate("Error Kindly Refresh",src="en",dest=language_input).text,language_input)
-        print(err)

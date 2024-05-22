@@ -1,5 +1,7 @@
 def controller(lang):
-    if(lang.lower()=="hindi"):
+    if(lang==None or lang==""):
+        return ""
+    elif(lang.lower()=="hindi"):
         return "hi"
     elif(lang.lower()=="english"):
         return "en"
@@ -15,4 +17,6 @@ def controller(lang):
         return "te"
     elif(lang.lower()=="tamil" or lang.lower()=="temil" or lang.lower()=="tamill" or lang.lower()=="temil"):
         return "ta"
+    else:
+        return ""
  

@@ -60,12 +60,14 @@ def download_ticket(pnr,language_input):
         for i in selected_data:
             selected_data=i
 
-        if(selected_data!={} and  selected_data !=None):
+        if(selected_data!={} and  selected_data !=None and type(selected_data)==type({})):
             return selected_data
+        else:
+            return None
 
           
       except Exception as e:
-
+        return None
         print("Error:", e)
     
 
@@ -84,6 +86,7 @@ def recieve_input_download(language_input):
             user_data=download_ticket(pnr_recieved,language_input)
             if user_data !=None and user_data!={}:
                 pdfmaking.generate_ticket(user_data, "data/ticketpdf/indian_railway_ticket.pdf")
+                speak("tickedownloaded.mp3",translator.translate("Ticket Downloaded",src="en",dest=language_input).text,language_input)
             else:
                 speak("wrong_pnr2.mp3",translator.translate("Wrong Pnr Entered Refresh",src="en",dest=language_input).text,language_input)
 
@@ -94,6 +97,7 @@ def recieve_input_download(language_input):
             user_data=download_ticket(pnr_recieved,language_input)
             if user_data !=None and user_data!={}:
                 pdfmaking.generate_ticket(user_data, "data/ticketpdf/indian_railway_ticket.pdf")
+                speak("tickedownloaded.mp3",("Ticket Downloaded"),language_input)
             else:
                 speak("wrong_pnr2.mp3","Wrong Pnr Entered Refresh",language_input)
     except Exception as err:
