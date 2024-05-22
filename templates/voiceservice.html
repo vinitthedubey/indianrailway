@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Service</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Black background */
+            font-family: Arial, sans-serif;
+            color: white;
+            min-height: 100vh; /* Ensure the body takes up the full viewport height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .background-image {
+            width: 300px; /* Adjust the width as needed */
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Voice Service</h1>
+    
+    <form method="POST">
+        <img class="background-image" src="https://cdn.dribbble.com/users/1036808/screenshots/7385069/media/aad192da74d690845d05eac18c5cadae.gif" name="background-image" alt="Background image">
+    </form>
+
+    <!-- Your other content here -->
+
+    <script>
+        // Add JavaScript to submit the form when the image is clicked
+        document.querySelector('.background-image').addEventListener('click', function() {
+            document.querySelector('form').submit();
+        });
+    </script>
+</body>
+</html>
