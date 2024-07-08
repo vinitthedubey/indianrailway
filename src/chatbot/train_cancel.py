@@ -3,6 +3,7 @@ from src.voice import ticketbook
 import time
 from Database import dbsetup
 import os
+from src.logger import logging
 
 def cancel_train(recieved_pnr,language_input):
     try:
@@ -18,7 +19,7 @@ def cancel_train(recieved_pnr,language_input):
                 if(selected_data!={} and selected_data !=None and selected_data['ticket_status']=="True" and type(selected_data)==type({})):
 
                     dbobj_user.update_one({ "pnr": {"$exists": True, "$eq": recieved_pnr}, "ticket_status" : {"$eq" : "True"}}, {"$set":{"ticket_status":"False"}})
-                    return (translator.tranlate("Ticket Cancelled Succesfully",src="en",dest=language_input).text)
+                    return (translator.translate("Ticket Cancelled Succesfully",src="en",dest=language_input).text)
                 elif(selected_data!={} and selected_data !=None and selected_data['ticket_status']=="False" and type(selected_data)==type({})):
                     return(translator.translate("Ticket Already Canceled",src="en",dest=language_input).text)
                 else:
@@ -26,9 +27,9 @@ def cancel_train(recieved_pnr,language_input):
 
             except Exception as e:
 
-                print("Error:", e)
+                logging.info("Error:", e)
         else:
             return(translator.translate("Wrong Pnr Entered Refresh",src="en",dest=language_input).text)
     except Exception as err:
-        print(err)
+        logging.info(err)
   

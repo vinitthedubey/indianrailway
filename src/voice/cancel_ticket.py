@@ -9,11 +9,12 @@ from src.voice import ticketbook
 import time
 from Database import dbsetup
 import os
+from src.logger import logging
 
 def record_audio(duration,filename):
     # Record audio
     fs = 44100  # Sampling frequency
-    print("starting........")
+    logging.info("starting........")
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='int16')
     sd.wait()  # Wait until recording is finished
 
@@ -28,16 +29,16 @@ def many_to_english(audio_file_path,language_input):
         audio = recognizer.record(source)
 
     try:
-        print("Translating...")
+        logging.info("Translating...")
         text = recognizer.recognize_google(audio, language=language_input)
-        print("Translating to English...")
+        logging.info("Translating to English...")
         translation = translator.translate(text, src=language_input, dest='en')
         return (translation.text)
 
     except sr.UnknownValueError:
-        print("Sorry, could not understand audio.")
+        logging.info("Sorry, could not understand audio.")
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        logging.info("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def speak(destination,text,language_input):
@@ -73,9 +74,9 @@ def cancel_train(language_input):
 
             except Exception as e:
 
-                print("Error:", e)
+                logging.info("Error:", e)
         else:
             speak("wrong_pnr.mp3",translator.translate("Wrong Pnr Entered Refresh",src="en",dest=language_input).text,language_input)
     except Exception as err:
-        print(err)
+        logging.info(err)
   

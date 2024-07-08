@@ -11,7 +11,7 @@ from Database import dbsetup
 
 from src import pdfmaking
 
-
+from src.logger import logging
 
 
 
@@ -40,12 +40,9 @@ def download_ticket(pnr,language_input):
         
       except Exception as e:
 
-        print("Error:", e)
+        logging.info("Error:", e)
     else:
       return (translator.translate("Invalid Pnr",src="en",dest=language_input).text)
        
       
     
-
-
-print(download_ticket(str(9892246557),"en"))

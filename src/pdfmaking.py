@@ -4,6 +4,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
+from src.logger import logging
 
 def generate_ticket(userdata, pdf_filename):
     try:
@@ -51,5 +52,5 @@ def generate_ticket(userdata, pdf_filename):
         # Build PDF document
         doc.build(elements)
     except Exception as err:
-        print(err)
+        logging.info(err)
 

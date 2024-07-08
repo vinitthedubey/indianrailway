@@ -9,7 +9,7 @@ import time
 from Database import dbsetup
 import os
 from src import pdfmaking
-
+from src.logger import logging
 def record_audio(duration,filename):
     # Record audio
     fs = 44100  # Sampling frequency
@@ -35,9 +35,9 @@ def many_to_english(audio_file_path,language_input):
         return (translation.text)
 
     except sr.UnknownValueError:
-        print("Sorry, could not understand audio.")
+        logging.info("Sorry, could not understand audio.")
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        logging.info("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def speak(destination,text,language_input):
@@ -68,7 +68,7 @@ def download_ticket(pnr,language_input):
           
       except Exception as e:
         return None
-        print("Error:", e)
+        
     
 
 
@@ -101,4 +101,4 @@ def recieve_input_download(language_input):
             else:
                 speak("wrong_pnr2.mp3","Wrong Pnr Entered Refresh",language_input)
     except Exception as err:
-        print(err)
+        logging.info(err)

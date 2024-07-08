@@ -14,11 +14,11 @@ from src.Passanger_details_in_voice import passanger_details_input
 from Database import dbsetup
 import os
 import random
-
+from src.logger import logging
 def record_audio(duration,filename):
     # Record audio
     fs = 44100  # Sampling frequency
-    print("starting........")
+    logging.info("starting........")
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='int16')
     sd.wait()  # Wait until recording is finished
 
@@ -33,16 +33,16 @@ def many_to_english(audio_file_path,language_input):
         audio = recognizer.record(source)
 
     try:
-        print("Translating...")
+        logging.info("Translating...")
         text = recognizer.recognize_google(audio, language=language_input)
-        print("Translating to English...")
+        logging.info("Translating to English...")
         translation = translator.translate(text, src=language_input, dest='en')
         return (translation.text)
 
     except sr.UnknownValueError:
-        print("Sorry, could not understand audio.")
+        logging.info("Sorry, could not understand audio.")
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        logging.info("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def speak(destination,text,language_input):
@@ -178,7 +178,7 @@ def train_details_book(from_station, to_station, date,language_input):
                         except Exception as e:
                             speak("class_select_error.mp3",translator.translate("Error Please Refresh",src="en",dest=language_input).text,language_input)
                             break
-                            print(e)
+                            
 
 
                         name=passanger_details_input.name(language_input)
@@ -196,7 +196,7 @@ def train_details_book(from_station, to_station, date,language_input):
                         userdata={"train_number":train_number,"train_name":train_name,"from_station_name":from_station_name,
                                     "from_station_code":from_station_code,"to_station_name":to_station_name,"to_station_code":to_station_code,"from_station_arrival_time":from_station_arrival_time,"to_station_arrival_time":to_station_arrival_time,
                                     "from_station_arrival_date":from_station_arrival_date,"to_station_arrival_date":to_station_arrival_date,"name":name,"age":age,"gender":gender,"nationality":nationality,"selected_class":selected_class,"current_status":current_status,"fare":fare,"pnr":pnr,"ticket_status":"True"}
-                        print("pnr=",pnr)    
+                        logging.info("pnr=",pnr)    
                         dbobj_train.insert_one(traindata)
                         dbobj_user.insert_one(userdata)
                         flag=1
@@ -226,7 +226,7 @@ def train_details_book(from_station, to_station, date,language_input):
                 break 
     except Exception as err:
         speak("big_error.mp3",translator.translate("Error Please Refresh",src="en",dest=language_input).text,language_input)
-        print(err)
+        logging.info(err)
 
                 
 
@@ -266,7 +266,7 @@ def receive_inputs_ticket_book(language_input):
             data_received_date=many_to_english("bookdatarecieved_date.wav",language_input)
             train_details_book( data_received_fromstation,data_received_deststation,data_received_date,language_input)
     except Exception as err:
-        print(err)
+        logging.info(err)
 
 
 

@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as bs
 import time
-
+from src.logger import logging
 
 def booking_details(from_station,to_destination,date,language_input):
     translator=Translator()
@@ -81,6 +81,6 @@ def booking_details(from_station,to_destination,date,language_input):
     
     
     except Exception as err:
-        print("err=",err)
+        logging.info("err=",err)
 
 

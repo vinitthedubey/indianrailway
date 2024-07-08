@@ -13,6 +13,7 @@ import time
 from src.Passanger_details_in_voice import passanger_details_input
 from Database import dbsetup
 import os
+from src.logger import logging
 def extract_train_info(html):
     # Parse the HTML
     soup = html
@@ -38,7 +39,7 @@ def extract_train_info(html):
 def record_audio(duration,filename):
     # Record audio
     fs = 44100  # Sampling frequency
-    print("starting........")
+    logging.info("starting........")
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='int16')
     sd.wait()  # Wait until recording is finished
 
@@ -53,16 +54,16 @@ def many_to_english(audio_file_path,language_input):
         audio = recognizer.record(source)
 
     try:
-        print("Translating...")
+        logging.info("Translating...")
         text = recognizer.recognize_google(audio, language=language_input)
-        print("Translating to English...")
+        logging.info("Translating to English...")
         translation = translator.translate(text, src=language_input, dest='en')
         return (translation.text)
 
     except sr.UnknownValueError:
-        print("Sorry, could not understand audio.")
+        logging.info("Sorry, could not understand audio.")
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        logging.info("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def speak(destination,text,language_input):
@@ -112,7 +113,7 @@ def train_status(train_no,language_input):
                 try:
                     time_train=(big_unit[i].find("div",class_=ch[0] ).text)
                 except Exception as e:
-                    print(e)
+                    logging.info(e)
                     time_train=(big_unit[i].find("div",class_=ch[1] ).text)
                 current_location=(big_unit[i].find("div",class_="Bm205b").text)
                 spoken_string=translator.translate(f"On {curr_date} Train number {train_number} Train Name {train_name} is currently at {current_location} is {time_train}",src="en",dest=language_input).text
@@ -164,4 +165,4 @@ def receive_inputs_train_status(language_input):
                 speak("wrong_train_number_status.mp3","No input Kindly Refresh",language_input)
     except Exception as err:
         speak("wrong_train_number_status.mp3",translator.translate("Error Kindly Refresh",src="en",dest=language_input).text,language_input)
-        print(err)
+        logging.info(err)

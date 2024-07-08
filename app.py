@@ -1,60 +1,33 @@
 
 from src import language_detection
 from src import controller
-from src.Passanger_details_in_voice import passanger_details_input
-from src.voice import menu
-
-from src.voice import ticketbook
-from src.voice import train_status
-from src.voice import cancel_ticket
-from src.voice import download_ticket
-
-#lang=language_detection.Run()
-
-#lang_code=controller.controller(lang)
-
-# print(menu.speak_options(lang_code))
-# print(menu.speak_options(lang_code))
-# print(test.gender(lang_code))
-# print(menu.speak_options(lang_code))
-
-# menu.speak_options(lang_code)
-# print(menu.receive_options(lang_code))
-
-# ticketbook.receive_inputs("en")
-
-# train_status.receive_inputs_train_status("hi")
-
-#ticketbook.receive_inputs_ticket_book("hi")
-
-#download_ticket.recieve_input_download("hi")
-# cancel_ticket.cancel_train("en")
-# download_ticket.recieve_input_download("en")
-#9892246557
-#2855571061
-
-# train_status.receive_inputs_train_status("en")
-
-#ticketbook.receive_inputs_ticket_book("en")
-
-#------------------------------------------------------------------------
-
-
-
-
 import os
-from flask import Flask, render_template, request,redirect
+from flask import Flask, render_template, request,redirect,jsonify
 import playsound
 import sounddevice as sd
 import wavio
 import gtts
 import speech_recognition as sr
 from googletrans import Translator
-import random
 from src.voice import menu
+from src.chatbot import train_book_chatbot
+from src.chatbot import train_book_options
+from src.chatbot import train_status_chatbot
+from src.chatbot import train_cancel
+from src.chatbot import download_ticket_chatbot
 
-selected_global_language=""
+selected_global_language="en" #by default
+response_data_train=[]
+select_train_n=None
 app = Flask(__name__)
+
+
+# List to store train details
+traindetailsreceived = []
+traindetailsselected=[]
+user_deatils=[]
+classselected=[]
+
 
 def record_audio(duration, filename):
     # Record audio
@@ -143,6 +116,171 @@ def voiceservice():
             return redirect('/thanks.html')
     else:
         return redirect('/thanks.html')
+
+@app.route('/index.html',methods=['GET', 'POST'])
+def cahtbotcall():
+    return render_template('index.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    translator=Translator()
+    user_message = request.json.get('message')
+    chat_state = request.json.get('state')
+    
+    
+    if user_message:
+        if user_message.lower() == 'exit':
+            return jsonify({"redirect": True, "url": "/thanks.html"})
+        
+        if chat_state == 'init':
+            if user_message == 'Book Ticket':
+                return jsonify({"response": translator.translate("Please enter source station:",src="en",dest=selected_global_language).text, "state": "source"})
+            elif user_message == 'Download Ticket':
+                return jsonify({"response": translator.translate("Please enter PNR number:",src="en",dest=selected_global_language).text, "state": "pnr_download"})
+            elif user_message == 'Cancel Ticket':
+                return jsonify({"response": translator.translate("Please enter PNR number:",src="en",dest=selected_global_language).text, "state": "pnr_cancel"})
+            elif user_message == 'Train Status':
+                return jsonify({"response": translator.translate("Please enter train number:",src="en",dest=selected_global_language).text, "state": "train_status"})
+            elif str(user_message).upper() in ["HI","HELLO","HEY","HOLA","GOODMORNING","GOOD MORNING","GOOD EVENING","GOODEVENING","GOODAFTERNOON","GOOD AFTERNOON","GOOD NIGHT","GOODNIGHT"]:
+                return jsonify({"response": translator.translate("Welcome to Indian Railway chatbot!",src="en",dest=selected_global_language).text, "state": "init"})
+            elif str(user_message).upper() in ["BYE","GOODBYE","GOOD BYE","THANKS","NICE","SEE YOU"]:
+                return jsonify({"response": translator.translate("Thank for choosing Indian Railway chatbot!",src="en",dest=selected_global_language).text, "state": "init"})
+            else:
+                return jsonify({"response": translator.translate("Apologies, I'm not equipped with that information right now. Feel free to ask me about ticket bookings, Train status, or download ticket instead!",src="en",dest=selected_global_language).text, "state": "init"})
+        elif chat_state == 'source':
+            traindetailsreceived.append(user_message)
+            return jsonify({"response": translator.translate("Please enter destination station:",src="en",dest=selected_global_language).text, "state": "destination"})
+        elif chat_state == 'destination':
+            traindetailsreceived.append (user_message)
+            return jsonify({"response": translator.translate("Please enter date and month (DD-Month):",src="en",dest=selected_global_language).text, "state": "date"})
+        elif chat_state == 'date':
+            traindetailsreceived.append(user_message)
+            return jsonify({"response": translator.translate("To Show Available Trains Press 1",src="en",dest=selected_global_language).text, "state": "display"})
+        elif chat_state == 'display':
+            z=user_message
+            global response_data_train
+            response_data_train=train_book_options.booking_details(traindetailsreceived[0],traindetailsreceived[1],traindetailsreceived[2],selected_global_language)
+            if(response_data_train=="" or response_data_train==None or response_data_train==[]):
+                return(jsonify({"response": translator.translate("Restart Error Ocurred!!",src="en",dest=selected_global_language).text, "state": "init"}))
+            
+            response_message=(
+                f"<strong>Train Available:</strong> {response_data_train[0]}<br>"
+                
+            )
+            t=response_data_train[0]
+
+            for i in range(1,t+1):
+                temp=translator.translate("To select this train enter",src="en",dest=selected_global_language).text
+                
+                response_message+=(
+                    f"<strong> {temp} {i}</strong><br>"
+                    f"Train number: {response_data_train[i][0]} <br> Train Name: {response_data_train[i][1]}<br>"
+                    f"FROM : {response_data_train[i][2]}<br> ({response_data_train[i][4]})<br>"
+                    f"Departurture time: {response_data_train[i][6]}<br> Date : {response_data_train[i][8]}"
+                    f"TO : {response_data_train[i][3]}<br> ({response_data_train[i][5]})<br>"
+                    f"Arrival time: {response_data_train[i][7]}<br> Date : {response_data_train[i][9]}<br>"
+                )
+
+                response_message+=(f"CLASS DETAILS<br>")
+
+                for j in range(response_data_train[i][10]):
+                    response_message+=(
+                        f"{response_data_train[i][12][response_data_train[i][11][j]][0]} | {response_data_train[i][12][response_data_train[i][11][j]][1]} | {response_data_train[i][12][response_data_train[i][11][j]][2]} <br>"
+                    )
+                response_message+="<br><br>"
+            response_message+="<br><strong>Select Train</strong>"
+
+
+            return jsonify({"response": response_message, "state": "selectedtrain"})
+        
+        elif chat_state=='selectedtrain':
+            global select_train_n
+            select_train_n=int(user_message)
+            traindetailsselected.append(response_data_train[select_train_n][0])
+            traindetailsselected.append(response_data_train[select_train_n][1])
+            traindetailsselected.append(response_data_train[select_train_n][2])
+            traindetailsselected.append(response_data_train[select_train_n][3])
+            traindetailsselected.append(response_data_train[select_train_n][4])
+            traindetailsselected.append(response_data_train[select_train_n][5])
+            traindetailsselected.append(response_data_train[select_train_n][6])
+            traindetailsselected.append(response_data_train[select_train_n][7])
+            traindetailsselected.append(response_data_train[select_train_n][8])
+            traindetailsselected.append(response_data_train[select_train_n][9])
+
+            response_message=(
+                f"<strong>Train Class Available:</strong> {response_data_train[0]}<br>"
+                
+            )
+
+            for j in range(response_data_train[select_train_n][10]):
+                    temp=translator.translate("To select This class enter",src="en",dest=selected_global_language).text
+                    response_message+=(
+                        f"<strong>{temp} {j}</strong><br>"
+                        f"{response_data_train[select_train_n][12][response_data_train[select_train_n][11][j]][0]} | {response_data_train[select_train_n][12][response_data_train[select_train_n][11][j]][1]} | {response_data_train[select_train_n][12][response_data_train[select_train_n][11][j]][2]} <br>"
+                    )
+            response_message+="<br><br>"
+            response_message+="<br><strong>Select Class</strong>"
+
+            return jsonify({"response": response_message, "state": "selectedclassn"})
+        elif chat_state=='selectedclassn':
+            select_train_class_n=int(user_message)
+
+            classselected.append(response_data_train[select_train_n][12][response_data_train[select_train_n][11][select_train_class_n]][0])
+            classselected.append(response_data_train[select_train_n][12][response_data_train[select_train_n][11][select_train_class_n]][1])
+            classselected.append(response_data_train[select_train_n][12][response_data_train[select_train_n][11][select_train_class_n]][2])
+
+            return jsonify({"response": translator.translate("Please Enter Your Name",src="en",dest=selected_global_language).text, "state": "name"})
+
+
+
+        
+        elif chat_state=='name':
+            user_deatils.append(user_message)
+            return jsonify({"response": translator.translate("Please Enter Your Age",src="en",dest=selected_global_language).text, "state": "age"})
+        
+        elif chat_state=='age':
+            user_deatils.append(user_message)
+            return jsonify({"response": translator.translate("Please Enter Your Gender",src="en",dest=selected_global_language).text, "state": "gender"})
+        
+        elif chat_state=='gender':
+            user_deatils.append(user_message)
+            return jsonify({"response": translator.translate("Please Enter Your Nationality",src="en",dest=selected_global_language).text, "state": "nationality"})
+        elif chat_state=='nationality':
+            user_deatils.append(user_message)
+            response_message=train_book_chatbot.train_booking(traindetailsselected,user_deatils,classselected,selected_global_language)
+            return jsonify({"response": response_message, "state": "init"})
+
+             
+        elif chat_state == 'pnr_download':
+            pnr = user_message
+            response_message = download_ticket_chatbot.download_ticket(pnr, selected_global_language)
+            return jsonify({"response": response_message, "state": "init"})
+        elif chat_state == 'pnr_cancel':
+            pnr = user_message
+            response_message = train_cancel.cancel_train(pnr,selected_global_language)
+            return jsonify({"response": response_message, "state": "init"})
+        elif chat_state == 'train_status':
+            train_no = user_message
+            response_data = train_status_chatbot.train_status(train_no, selected_global_language)
+            response_message = (
+                f"<strong>Train Number:</strong> {response_data['train_number']}<br>"
+                f"<strong>Train Name:</strong> {response_data['train_name']}<br><br>"
+                "<table border='1' style='border-collapse: collapse;'>"
+                "<tr><th>Date</th><th>Location</th><th>Time</th></tr>"
+            )
+            for status in response_data['status']:
+                response_message += (
+                    f"<tr>"
+                    f"<td>{status['date']}</td>"
+                    f"<td>{status['location']}</td>"
+                    f"<td>{status['time']}</td>"
+                    f"</tr>"
+                )
+            response_message += "</table>"
+            return jsonify({"response": response_message, "state": "init"})
+    
+    return jsonify({"response": translator.translate("I didn't understand that. Please try again.",src="en",dest=selected_global_language).text, "state": "init"})
+
 
 @app.route('/thanks.html',methods=["GET"])
 def thanks():
