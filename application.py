@@ -16,10 +16,12 @@ from src.chatbot import train_status_chatbot
 from src.chatbot import train_cancel
 from src.chatbot import download_ticket_chatbot
 
-selected_global_language="en" #by default
+selected_global_language="hi" #by default
 response_data_train=[]
 select_train_n=None
-app = Flask(__name__)
+
+application = Flask(__name__)
+app=application
 
 
 # List to store train details
@@ -92,11 +94,12 @@ def home():
             speak("service_selection_option.mp3",translator.translate("do you want to use chatbot say chatbot",src="en",dest=lang_code).text,lang_code)
             record_audio(3,"service_selection_option_selected.mp3")
             service=many_to_english("service_selection_option_selected.mp3",lang_code)
+            print('service=',service)
 
             if service ==None or service=="":
 
                 return redirect("/voiceservice.html")
-            elif (service.upper().strip() in ["CHAT","BOT","CHAT BOT","CHATBOT","BOTCHAT","BOT CHAT","YES"]):
+            elif (any(sub in ["CHAT", "BOT","CHAAT","BOAT", "CHAT BOT", "CHATBOT", "BOTCHAT", "BOT CHAT", "YES"] for sub in (service[i:j].upper().strip() for i in range(len(service)) for j in range(i + 1, len(service) + 1)))):
                 return redirect('/index.html')
             else:
                 return redirect("/voiceservice.html")
@@ -289,4 +292,4 @@ def thanks():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0")

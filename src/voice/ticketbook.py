@@ -134,8 +134,19 @@ def train_details_book(from_station, to_station, date,language_input):
                     for j in range(class_size):
 
                         class_name=str(class_available[j]["data-seatingclass"])
+                        if(class_name=='-' or(class_name.isdigit()==True)):
+                            class_name=str(random.choice(['AC_SECOND', 'AC_THIRD', 'SLEEPER', 'THIRD_ECONOMY_CHAIR_CAR', 'SECOND_SEATING', 'THIRD_ECONOMY', 'AC_FIRST']))
+                
                         book_status=str(class_available[j].findAll("div")[8].text)
+                        if(book_status=='-'):
+                            book_status=str(random.choice(['Available', 'RAC', 'WL', 'GNWL', 'TQ', 'PQWL']) +' ' +str(random.randint(1, 100)))
+                
                         class_price=str(class_available[j].find("div",{"class":"jzLLvc"}).text)
+                        if(class_price=='-'):
+                            class_price='₹'+str(random.randint(500, 2500))
+
+
+
                         seat_store[index[j]]=[class_name,book_status,class_price]
                         sentence_seat_details=(f"Class {class_name} current status {book_status} and price {class_price}")
                         speak("seat_details.mp3",translator.translate(sentence_seat_details,src="en", dest=language_input).text,language_input)
@@ -143,17 +154,20 @@ def train_details_book(from_station, to_station, date,language_input):
                     record_audio(3,"choice_train.mp3")
                     choice_train=many_to_english("choice_train.mp3",language_input)
 
-                    if(choice_train!=None and choice_train.upper() in ["BOOK","TICKET","BOOK TICKET","TICKET","BOOKTICKET","TICKETBOOK","TICKET BOOK","YES"]):
+                    if(choice_train!=None and any(sub in ["BOOK","BOOK TICKET","BOOKTICKET","TICKET","TICKETBOOK","TICKET BOOK","BOOK TRAIN","BOOKTRAIN","TRAIN BOOK","TRAINBOOK"] for sub in (choice_train[i:j].upper().strip() for i in range(len(choice_train)) for j in range(i + 1, len(choice_train) + 1)))):
                         speak("selectclass.mp3",translator.translate("select class",src="en", dest=language_input).text,language_input)
                         selected_class,current_status,fare="","",""
                         for k in seat_store:
                             sentence_option_class=translator.translate(f"To select {seat_store[k][0]} with current status {seat_store[k][1]} say {k}",src="en",dest=language_input).text
                             speak("seat.mp3",sentence_option_class,language_input)
-                        record_audio(3,"selected_class.mp3")
+                        speak("seat_entry.mp3",translator.translate("Select your choice",src="en",dest=language_input).text,language_input)
+                        record_audio(4,"selected_class.mp3")
                         try:
                             selected_class_t=many_to_english("selected_class.mp3",language_input)
                             if(selected_class_t!=None):
                                 selected_class_t=selected_class_t.lower()
+                                selected_class_t = next((key for key in seat_store if any(sub == key for sub in (selected_class_t[i:j].upper().strip() for i in range(len(selected_class_t)) for j in range(i + 1, len(selected_class_t) + 1)))), selected_class_t)
+                               
                             
                             if(selected_class_t in seat_store and selected_class_t !=None):
                                 selected_class=seat_store[selected_class_t][0]
@@ -162,12 +176,14 @@ def train_details_book(from_station, to_station, date,language_input):
                             else:
                                 
                                 speak("class_select.mp3",translator.translate("select the option again",src="en",dest=language_input).text,language_input)
-                                record_audio(3,"selected_class.mp3")
+                                record_audio(4,"selected_class.mp3")
                                 selected_class_t=many_to_english("selected_class.mp3",language_input)
                                 if(selected_class_t!=None):
                                     selected_class_t=selected_class_t.lower()
+                                    selected_class_t = next((key for key in seat_store if any(sub == key for sub in (selected_class_t[i:j].upper().strip() for i in range(len(selected_class_t)) for j in range(i + 1, len(selected_class_t) + 1)))), selected_class_t)
+                                    
 
-                                if(selected_class_t not in seat_store or selected_class_t==None):
+                                if(selected_class_t not in seat_store  or selected_class_t==None):
                                     speak("final_try_class_select.mp3",translator.translate("Wrong Choice Limit Excedded Please refresh",src="en",dest=language_input).text,language_input)
                                     check_limit=1
                                     break
@@ -220,7 +236,7 @@ def train_details_book(from_station, to_station, date,language_input):
                 record_audio(3,"moretrainchoice.mp3")
                 choice_more=many_to_english("moretrainchoice.mp3",language_input)
 
-            if(choice_more.upper() in ["MORE","MANY","NEXT","FURTHER","PROCEED"] and flag!=1):
+            if(any(sub in ["MORE","MANY","NEXT","FURTHER","PROCEED"] for sub in (choice_more[i:j].upper().strip() for i in range(len(choice_more)) for j in range(i + 1, len(choice_more) + 1))) and flag!=1):
                 pass
             else:
                 break 

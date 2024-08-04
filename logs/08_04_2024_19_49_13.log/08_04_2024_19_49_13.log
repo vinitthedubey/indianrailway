@@ -1,0 +1,18 @@
+[ 2024-08-04 19:49:13,867] 187 werkzeug - WARNING -  * Debugger is active!
+[ 2024-08-04 19:49:13,869] 187 werkzeug - INFO -  * Debugger PIN: 369-540-303
+[ 2024-08-04 19:49:25,405] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:25] "GET / HTTP/1.1" 200 -
+[ 2024-08-04 19:49:33,968] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:33] "GET /index.html HTTP/1.1" 200 -
+[ 2024-08-04 19:49:34,032] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:34] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+[ 2024-08-04 19:49:34,033] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:34] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[ 2024-08-04 19:49:36,866] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:36] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:49:43,675] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:43] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:49:49,355] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:49] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:49:56,428] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:49:56] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:50:40,834] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:50:40] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:51:18,354] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:51:18] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:51:47,020] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:51:47] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:52:01,182] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:52:01] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:52:05,985] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:52:05] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:52:10,189] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:52:10] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:52:35,970] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 19:52:35] "POST /chat HTTP/1.1" 200 -
+[ 2024-08-04 19:52:52,361] 187 werkzeug - INFO -  * Detected change in 'e:\\collegefinal\\app.py', reloading

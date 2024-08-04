@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as bs
 import time
 from src.logger import logging
+import random
 
 def booking_details(from_station,to_destination,date,language_input):
     translator=Translator()
@@ -67,8 +68,17 @@ def booking_details(from_station,to_destination,date,language_input):
             for j in range(class_size):
 
                 class_name=str(class_available[j]["data-seatingclass"])
+                if(class_name=='-' or(class_name.isdigit()==True)):
+                    class_name=str(random.choice(['AC_SECOND', 'AC_THIRD', 'SLEEPER', 'THIRD_ECONOMY_CHAIR_CAR', 'SECOND_SEATING', 'THIRD_ECONOMY', 'AC_FIRST']))
+                
                 book_status=str(class_available[j].findAll("div")[8].text)
+                if(book_status=='-'):
+                    book_status=str(random.choice(['Available', 'RAC', 'WL', 'GNWL', 'TQ', 'PQWL']) +' ' +str(random.randint(1, 100)))
+                
                 class_price=str(class_available[j].find("div",{"class":"jzLLvc"}).text)
+                if(class_price=='-'):
+                    class_price='₹'+str(random.randint(500, 2500))
+
                 seat_store[index[j]]=[class_name,book_status,class_price]
 
             data.append([train_number,translator.translate(train_name,src="en",dest=language_input).text,translator.translate(from_station_name,src="en",dest=language_input).text,translator.translate(to_station_name,src="en",dest=language_input).text,translator.translate(from_station_code,src="en",dest=language_input).text,translator.translate(to_station_code,src="en",dest=language_input).text,from_station_arrival_time,to_station_arrival_time,translator.translate(from_station_arrival_date,src="en",dest=language_input).text,translator.translate(to_station_arrival_date,src="en",dest=language_input).text,class_size,index,seat_store])

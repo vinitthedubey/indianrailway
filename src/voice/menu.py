@@ -87,16 +87,18 @@ def receive_options(language_input):
         record_audio(4,"currentoption.mp3")
         selected_option=many_to_english("currentoption.mp3",language_input)
         if(selected_option!="" and selected_option!=None):
-            if (selected_option.upper().strip() in ["BOOK","BOOK TICKET","BOOKTICKET","TICKET","TICKETBOOK","TICKET BOOK","BOOK TRAIN","BOOKTRAIN","TRAIN BOOK","TRAINBOOK"]):
+            if(any(sub in ["BOOK","BOOK TICKET","BOOKTICKET","TICKET","TICKETBOOK","TICKET BOOK","BOOK TRAIN","BOOKTRAIN","TRAIN BOOK","TRAINBOOK"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 ticketbook.receive_inputs_ticket_book(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["TRAIN STATUS","TRAINSTATUS","STATUS","STATUS TRAIN","STATUSTRAIN","TRAIN","TRAINCHECK","TRAIN CHECK","CHECK TRAIN","CHECKTRAIN"]):
+            elif(any(sub in ["TRAIN STATUS","TRAINSTATUS","STATUS","STATUS TRAIN","STATUSTRAIN","TRAIN","TRAINCHECK","TRAIN CHECK","CHECK TRAIN","CHECKTRAIN"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
+            
                 train_status.receive_inputs_train_status(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["CANCEL","TICKETCANCEL","TICKET CANCEL","CANCELLING TICKET","CANCELLINGTICKET","CANCEL TICKET","CANCELTICKET","CANCEL TRAIN","CANCELTRAIN","TRAIN CANCEL","TRAINCANCEL"]):
+            elif(any(sub in ["CANCEL","TICKETCANCEL","TICKET CANCEL","CANCELLING TICKET","CANCELLINGTICKET","CANCEL TICKET","CANCELTICKET","CANCEL TRAIN","CANCELTRAIN","TRAIN CANCEL","TRAINCANCEL"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
+            
                 cancel_ticket.cancel_train(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["DOWNLOAD","DOWNLOAD TICKET","DOWNLOADTICKET","TICKET DOWNLOAD","TICKETDOWNLOAD","DOWNLOADING"]):
+            elif(any(sub in ["DOWNLOAD","DOWNLOAD TICKET","DOWNLOADTICKET","TICKET DOWNLOAD","TICKETDOWNLOAD","DOWNLOADING"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 download_ticket.recieve_input_download(language_input)
                 return "done"
             else:
@@ -113,16 +115,16 @@ def receive_options(language_input):
         record_audio(4,"currentoption.mp3")
         selected_option=many_to_english("currentoption.mp3",language_input)
         if(selected_option!="" and selected_option!=None):
-            if (selected_option.upper().strip() in ["BOOK","BOOK TICKET","BOOKTICKET","TICKET","TICKETBOOK","TICKET BOOK","BOOK TRAIN","BOOKTRAIN","TRAIN BOOK","TRAINBOOK"]):
+            if(any(sub in ["BOOK","BOOK TICKET","BOOKTICKET","TICKET","TICKETBOOK","TICKET BOOK","BOOK TRAIN","BOOKTRAIN","TRAIN BOOK","TRAINBOOK"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 ticketbook.receive_inputs_ticket_book(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["TRAIN STATUS","TRAINSTATUS","STATUS","STATUS TRAIN","STATUSTRAIN","TRAIN","TRAINCHECK","TRAIN CHECK","CHECK TRAIN","CHECKTRAIN"]):
+            elif(any(sub in ["TRAIN STATUS","TRAINSTATUS","STATUS","STATUS TRAIN","STATUSTRAIN","TRAIN","TRAINCHECK","TRAIN CHECK","CHECK TRAIN","CHECKTRAIN"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 train_status.receive_inputs_train_status(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["CANCEL","TICKETCANCEL","TICKET CANCEL","CANCELLING TICKET","CANCELLINGTICKET","CANCEL TICKET","CANCELTICKET","CANCEL TRAIN","CANCELTRAIN","TRAIN CANCEL","TRAINCANCEL"]):
+            elif(any(sub in ["CANCEL","TICKETCANCEL","TICKET CANCEL","CANCELLING TICKET","CANCELLINGTICKET","CANCEL TICKET","CANCELTICKET","CANCEL TRAIN","CANCELTRAIN","TRAIN CANCEL","TRAINCANCEL"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 cancel_ticket.cancel_train(language_input)
                 return "done"
-            elif(selected_option.upper().strip() in ["DOWNLOAD","DOWNLOAD TICKET","DOWNLOADTICKET","TICKET DOWNLOAD","TICKETDOWNLOAD","DOWNLOADING"]):
+            elif(any(sub in ["DOWNLOAD","DOWNLOAD TICKET","DOWNLOADTICKET","TICKET DOWNLOAD","TICKETDOWNLOAD","DOWNLOADING"] for sub in (selected_option[i:j].upper().strip() for i in range(len(selected_option)) for j in range(i + 1, len(selected_option) + 1)))):
                 download_ticket.recieve_input_download(language_input)
                 return "done"
             else:

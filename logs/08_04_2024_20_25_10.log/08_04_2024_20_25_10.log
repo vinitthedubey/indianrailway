@@ -1,0 +1,3 @@
+[ 2024-08-04 20:25:11,835] 187 werkzeug - WARNING -  * Debugger is active!
+[ 2024-08-04 20:25:11,837] 187 werkzeug - INFO -  * Debugger PIN: 369-540-303
+[ 2024-08-04 20:25:11,865] 187 werkzeug - INFO - 127.0.0.1 - - [04/Aug/2024 20:25:11] "GET / HTTP/1.1" 200 -

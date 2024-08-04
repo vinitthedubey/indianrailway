@@ -64,6 +64,7 @@ def Run():
 
 
     # Ask user to select preferred language
+    speak("selection_language2.mp3","Say Only one time.","en")
     speak("selection_language.mp3","Select your preferred language.","en")
     
 
