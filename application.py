@@ -16,7 +16,7 @@ from src.chatbot import train_status_chatbot
 from src.chatbot import train_cancel
 from src.chatbot import download_ticket_chatbot
 
-selected_global_language="hi" #by default
+selected_global_language="en" #by default
 response_data_train=[]
 select_train_n=None
 

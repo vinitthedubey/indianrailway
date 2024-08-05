@@ -118,6 +118,8 @@ def train_details_book(from_station, to_station, date,language_input):
                 #seat details
                 class_available=big_unit[count].findAll("div",{"class":"cp2zCc yp"})
                 class_size=len(class_available)
+                if class_size==0 or class_size==None:
+                    class_size=3
                 index=["first","second","third","fourth","fivth","sixth","seventh","eighth","nineth","tenth"]
                 seat_store={}
                 
@@ -150,7 +152,7 @@ def train_details_book(from_station, to_station, date,language_input):
                         seat_store[index[j]]=[class_name,book_status,class_price]
                         sentence_seat_details=(f"Class {class_name} current status {book_status} and price {class_price}")
                         speak("seat_details.mp3",translator.translate(sentence_seat_details,src="en", dest=language_input).text,language_input)
-                    speak("choicetrain.mp3",translator.translate("do you want to book train ? Say ticket book",src="en", dest=language_input).text,language_input)
+                    speak("choicetrain.mp3",translator.translate("do you want to book train ? Say ticket book else nothing",src="en", dest=language_input).text,language_input)
                     record_audio(3,"choice_train.mp3")
                     choice_train=many_to_english("choice_train.mp3",language_input)
 
@@ -232,16 +234,11 @@ def train_details_book(from_station, to_station, date,language_input):
                 break
             
             if(flag!=1):
-                speak("moretrain.mp3",translator.translate("Want More Train Say more",src="en",dest=language_input).text,language_input)
-                record_audio(3,"moretrainchoice.mp3")
-                choice_more=many_to_english("moretrainchoice.mp3",language_input)
-
-            if(any(sub in ["MORE","MANY","NEXT","FURTHER","PROCEED"] for sub in (choice_more[i:j].upper().strip() for i in range(len(choice_more)) for j in range(i + 1, len(choice_more) + 1))) and flag!=1):
                 pass
             else:
-                break 
+                break
     except Exception as err:
-        speak("big_error.mp3",translator.translate("Error Please Refresh",src="en",dest=language_input).text,language_input)
+        speak("big_error.mp3",translator.translate("Thank You for using Indian Railways",src="en",dest=language_input).text,language_input)
         logging.info(err)
 
                 
